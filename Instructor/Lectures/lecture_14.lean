@@ -225,7 +225,7 @@ where bools_to_interp_helper : (vars : Nat) → (vals : List Bool) → Interp
 To think about: smells like some kind of fold. Iteratively combine
 bool at head of list with given interpretation by overriding at with
 the head value for the *which?* variable
-
+-/
 
 
 /-!
