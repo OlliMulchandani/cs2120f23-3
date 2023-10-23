@@ -188,6 +188,8 @@ def make_bool_lists: Nat → List (List Bool)
             (List.map (fun L => true::L) (make_bool_lists n'))
 -- REVIEW
 
+#eval make_bool_lists 2
+
 /-!
 #### Bool List to/from Interpretation Function 
 
@@ -303,11 +305,19 @@ Boolean values.
 -/ 
 
 -- The column of truth table outputs for e
-def truth_table_outputs : Expr → List Bool
+def truth_table_outputs' : Expr → List Bool
 | e =>  eval_expr_over_interps e (mk_interps_vars (num_vars e))
 where eval_expr_over_interps : Expr → List Interp → List Bool
 | _, [] => []
 | e, h::t => eval_expr_over_interps e t ++ [eval_expr e h]
+
+
+def truth_table_outputs : Expr → List Bool
+| e => List.map (eval_expr e) (mk_interps_vars (num_vars e))
+
+
+#eval truth_table_outputs ({var.mk 0} ∨ {var.mk 1})
+#eval List.foldr and true (truth_table_outputs ({var.mk 0} ∨ ¬{var.mk 0})) -- valid
 
 -- REVIEW
 
@@ -372,7 +382,7 @@ def find_model : Expr → Option Interp
   let interps := mk_interps_expr e
   find_model_helper interps e
 where find_model_helper : List Interp → Expr → Option Interp
-| [], _ => none
+| [], _ => none  -- Lean opens the Option namespace by default
 | h::t, e => if (eval_expr e h) then some h else find_model_helper t e
 
 -- REVIEW
