@@ -1,5 +1,5 @@
 from z3 import *
-#s = Solver()
+
 x = Int('x')
 print(simplify(5*(2+x)+3*(5*x+4)-(x**2)**2))
 
@@ -43,3 +43,14 @@ q = Bool('q')
 print (And(p, q, True))
 print (simplify(And(p, q, True)))
 print (simplify(And(p, False)))
+
+
+X = Real('X')
+Y = Real('Y')
+s = Solver()
+s.add(X**2 + Y**2 == 1)
+s.add(X != Y)
+s.add(X > 0, Y > 0)
+s.check()
+m = s.model()
+print(m)
