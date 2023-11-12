@@ -192,3 +192,73 @@ match n with
 -/
 
 def sl5 : ∃ (s : String), s.length = 5 := ⟨"Hello", rfl ⟩
+
+
+
+/-!
+## Homework
+
+(1) Define a predicate, ev_len_str, expressing the property
+of a string of being of an even-length.
+-/
+
+-- Here
+def ev_len_str : Set String := {s | s.length % 2 = 0}
+
+
+/-
+(2) Use #check to typecheck an expression for the set of all
+even length strings.
+-/
+
+-- Here
+#check ev_len_str
+
+
+/-
+(3) Define a predicate, str_eq_len, applicable to any
+String value, s, and to any Nat value, n, that is satisfied
+just in those cases where s.length equals n.
+-/
+
+-- Here
+def str_eq_len : Set (String × Nat) := {p | p.1.length = p.2}
+
+
+
+
+/-
+(4) Define str_eq_lens : set String × Nat, to be the *set*
+of all ordered pairs, p = ⟨ s, n ⟩, such that n = s.length.
+-/
+
+-- Here
+def str_eq_lens : Set (String × Nat) := {p | p.1.length = p.2} --how is this different to #3?
+
+
+/-
+(5) Use "example" in Lean to state and prove the proposition
+that ⟨ "I love Logic!", 13 ⟩ ∈ str_eq_lens.
+-/
+
+-- Here
+example : Prop := ⟨ "I love Logic!", 13 ⟩ ∈ str_eq_lens
+
+
+
+/-
+(6) Use "example" in Lean again to state and prove that
+⟨ "I love Logic!", 1 ⟩ ∉ str_eq_lens. That's shorthand
+notation for ¬("I love Logic!", 1⟩ ∈ str_eq_lens. And you
+know what that means.
+-/
+
+-- Here
+
+axiom em : ∀ (P : Prop), P ∨ ¬P
+
+example : ¬⟨"I love Logic!", 1⟩ ∈ str_eq_lens :=
+let prop := em (⟨"I love Logic!", 1⟩ ∈ str_eq_lens)
+match prop with
+| Or.inl is => nomatch is
+| Or.inr isnt => isnt
