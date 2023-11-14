@@ -193,7 +193,7 @@ match n with
 
 def sl5 : ∃ (s : String), s.length = 5 := ⟨"Hello", rfl ⟩
 
-
+--L∃∀N
 
 /-!
 ## Homework
@@ -203,8 +203,7 @@ of a string of being of an even-length.
 -/
 
 -- Here
-def ev_len_str : Set String := {s | s.length % 2 = 0}
-
+def ev_len_str : String → Prop := λ s => s.length % 2 = 0
 
 /-
 (2) Use #check to typecheck an expression for the set of all
@@ -212,8 +211,8 @@ even length strings.
 -/
 
 -- Here
-#check ev_len_str
-
+#check {s : String | s.length % 2 = 0}
+#check {s : String | ev_len_str s}
 
 /-
 (3) Define a predicate, str_eq_len, applicable to any
@@ -222,7 +221,8 @@ just in those cases where s.length equals n.
 -/
 
 -- Here
-def str_eq_len : Set (String × Nat) := {p | p.1.length = p.2}
+def str_eq_len : String → Nat → Prop
+| s, n => s.length = n
 
 
 
@@ -233,7 +233,7 @@ of all ordered pairs, p = ⟨ s, n ⟩, such that n = s.length.
 -/
 
 -- Here
-def str_eq_lens : Set (String × Nat) := {p | p.1.length = p.2} --how is this different to #3?
+def str_eq_lens : Set (String × Nat) := {p | p.1.length = p.2}
 
 
 /-
@@ -243,7 +243,7 @@ that ⟨ "I love Logic!", 13 ⟩ ∈ str_eq_lens.
 
 -- Here
 example : Prop := ⟨ "I love Logic!", 13 ⟩ ∈ str_eq_lens
-
+example : ⟨ "I love Logic!", 13 ⟩ ∈ str_eq_lens := rfl
 
 
 /-
@@ -262,3 +262,7 @@ let prop := em (⟨"I love Logic!", 1⟩ ∈ str_eq_lens)
 match prop with
 | Or.inl is => nomatch is
 | Or.inr isnt => isnt
+
+
+example : ⟨"I love Logic!", 1⟩ ∉ str_eq_lens :=
+λ (t : ⟨"I love Logic!", 1⟩ ∈ str_eq_lens) => nomatch t
