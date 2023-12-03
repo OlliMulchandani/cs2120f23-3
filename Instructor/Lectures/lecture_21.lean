@@ -1,7 +1,8 @@
-import Mathlib.Data.Set.Basic
+--import Mathlib.Data.Set.Basic
+--import Mathlib.Logic.Relation
+
 
 /-!
-
 # Set Theory
 
 A set is intuitively understood as a collection of objects.
@@ -416,9 +417,15 @@ reflects this fact, with ∩ in the language of set theory reducing to ∧ in
 the language of predicate logic. The following Lean codeillustrate the point.
 -/
 
+#reduce Set.inter
+-- fun s₁ s₂ a => s₁ a ∧ s₂ a
+
+
+
 variable (α : Type) (s t : Set α)
 #check s ∩ t    -- the intersection of sets is a set
 #reduce s ∩ t   -- its membership predicate is formed using ∧
+
 
 /-!
 As another example, the intersection of our even (ev) and small sets,
@@ -513,6 +520,11 @@ As an example, we now define even_or_small_set as the union
 of the even_set and small_set.
 -/
 
+#reduce @Set.union
+-- fun {α} s₁ s₂ a => s₁ a ∨ s₂ a
+
+
+
 def even_or_small_set := ev_set ∪ small_set
 
 /-!
@@ -548,9 +560,12 @@ predicates, the complement operation reduces to the negation of
 membership predicates.
 -/
 
+#reduce sᶜ    -- fun x => x ∈ s → False means fun x => x ∉ s
+-- fun x => x ∈ s → False
+
 variable (s : Set Nat)
 #check sᶜ     -- Standard notation for complement of set s
-#reduce sᶜ    -- fun x => x ∈ s → False means fun x => x ∉ s
+
 
 /-!
 Exercises:
@@ -579,16 +594,16 @@ example : 6 ∈ ev_set \ small_set := ⟨ rfl, λ h => nomatch h ⟩
 -/
 
 #reduce @Set.Subset
+-- fun {α} s₁ s₂ => ∀ ⦃a : α⦄, a ∈ s₁ → s₂ a
 
 /-!
 ### Powerset
 -/
 
 #reduce @Set.powerset
+-- fun {α} s t => ∀ ⦃a : α⦄, a ∈ t → s aLean 4
 
-variable (s t : Set Nat)
-#reduce s ∩ t
-#reduce sᶜ
+
 
 /-!
 ## Summary of Set Theory and Logical Underpinnings
@@ -596,55 +611,13 @@ variable (s t : Set Nat)
 | Set Theory  | Set Theory Definitions    | Predicate Logic                   |
 |-------------|---------------------------|-----------------------------------|
 | set α       | axioms of set theory      | predicate (α → Prop in Lean)      |
-| s ∩ t       | { a | a ∈ s ∧ a ∈ t }     | λ a => s a ∧ t a                  |
-| s ∪ t       | { a | a ∈ s ∨ a ∈ t }     | λ a => s a ∨ t a                  |
-| sᶜ          | { a | a ∉ s }             | λ a => s a → False                |
-| s \ t       | { a | a ∈ s ∧ a ∉ t }     | λ a => s a ∧ (t a → False)        |
+| s ∩ t       | { a \| a ∈ s ∧ a ∈ t }    | λ a => s a ∧ t a                  |
+| s ∪ t       | { a \| a ∈ s ∨ a ∈ t }    | λ a => s a ∨ t a                  |
+| sᶜ          | { a \| a ∉ s }            | λ a => s a → False                |
+| s \ t       | { a \| a ∈ s ∧ a ∉ t }    | λ a => s a ∧ (t a → False)        |
 | s ⊆ t       | ∀ a, a ∈ s → a ∈ t  ...   | λ a => s a → t a ...              |
 | s ⊊ t       | ... ∧ ∃ w, w ∈ t ∧ w ∉ s  | ... ∧ ∃ w, (t w) ∧ (s w → False)  |
-| 𝒫 s         | { b : Set s | b ⊆ univ }  | λ b => b ⊆ univ                   |
+| 𝒫 s         | { t \| t ⊆ s }            | fun t => ∀ ⦃a : ℕ⦄, t a → s a     |
 -/
 
-/-!
-## Exercises
-
-### Transitivity of Subset Relation
-
-Suppose we have sets, s1, s2, and s3, with s1 ⊆ s2 and s2 ⊆ s3.
-Does it necessarily follow that s1 ⊆ s3? In other words, is it
-the case that s1 ⊆ s2 → s2 ⊆ s3 → s1 ⊆ s3? First think about in
-concrete terms. For example, suppose a bag of pearls is inside a
-bag of rice, and that in turn is inside a bag of straw. Are the
-pearls inside the bag of straw? Yeah, really they are. Formalize
-and prove it in Lean. Hint State the proposition in the language
-of set theory then construct a proof of its reduction to logical
-definitions.
-
-### Distributivity of Intersection Over Union
--/
-
-#check ∀ (α : Type) (r s t : Set α), (r ∩ (s ∪ t)) = ((r ∩ s) ∪ (r ∩ t))
-
-
-#check propext
-
-example (α : Type) (r s t : Set α) : (r ∩ (s ∪ t)) = ((r ∩ s) ∪ (r ∩ t)) := by
-    apply Set.ext   -- replaces = with logical ↔
-
-    intro x
-    apply Iff.intro
-
-    -- forward
-    intro h
-    cases h with
-    | intro hl hr =>
-      _
-
-
-
-
-/-!
-### DeMorgan's Laws In Set Theory
-
-Suppose s, t, and u are sets. Is it the case that
--/
+#reduce 𝒫 s
