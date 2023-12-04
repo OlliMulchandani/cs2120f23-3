@@ -117,7 +117,7 @@ formal proof of it, and briefly explain in English how you
 proved it.
 -/
 
-example : ∃ n, square n 4 := Exists.intro 2 (sqr 2 4 rfl) -- fill in _
+example : ∃ n, square n 4 := Exists.intro 2 (sqr 2 4 rfl)
 
 /-
 English language translation of propostion here:
